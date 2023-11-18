@@ -46,11 +46,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Check Current Directory
-        run: |
-          pwd
-          ls -la
-
       - name: Build the Docker image
         run: docker build -t ${{ env.APPLICATIONDOCKERIMAGE }} .
 
