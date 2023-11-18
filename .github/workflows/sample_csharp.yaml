@@ -42,10 +42,10 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          docker build . --file Dockerfile --tag ${{ vars.APP_IMAGE }}
+          docker build . --file Dockerfile --tag ${{ vars.APP_IMAGE }}:${{ $env:GITHUB_SHA }}
 
       - name: Log in to Docker Hub or your container registry
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push the Docker image
-        run: docker push ${{ vars.APP_IMAGE }}
+        run: docker push ${{ vars.APP_IMAGE }}:${{ $env:GITHUB_SHA }}
