@@ -9,35 +9,35 @@ defaults:
     working-directory: ./application/sample_csharp
 
 jobs:
-  # analyze:
-  #   name: Analyze
-  #   runs-on: ubuntu-latest
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
 
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       language: ["csharp"]
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["csharp"]
 
-  #   steps:
-  #     - name: Check Current Directory
-  #       run: |
-  #         pwd
+    steps:
+      - name: Check Current Directory
+        run: |
+          pwd
 
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-  #     - name: Initialize CodeQL
-  #       uses: github/codeql-action/init@v2
-  #       with:
-  #         languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
 
-  #     - name: Autobuild
-  #       uses: github/codeql-action/autobuild@v2
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
 
-  #     - name: Perform CodeQL Analysis
-  #       uses: github/codeql-action/analyze@v2
-  #       with:
-  #         category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{matrix.language}}"
 
   Containerize:
     name: Build & Push
