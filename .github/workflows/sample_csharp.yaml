@@ -4,6 +4,10 @@ on:
   push:
     branches: ["develop"]
 
+defaults:
+  run:
+    working-directory: ./application/sample_csharp
+
 jobs:
   analyze:
     name: Analyze
