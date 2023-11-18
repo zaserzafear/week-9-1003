@@ -74,7 +74,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./manifests/dev
+        working-directory: ./manifest/dev
 
     steps:
       - name: Checkout repository
