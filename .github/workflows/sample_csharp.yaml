@@ -69,6 +69,7 @@ jobs:
   deploy-to-k8s:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
+    environment: develop
 
     needs: containerize
 
