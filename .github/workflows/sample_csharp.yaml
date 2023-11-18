@@ -19,6 +19,10 @@ jobs:
         language: ["csharp"]
 
     steps:
+      - name: Check Current Directory
+        run: |
+          pwd
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -34,3 +38,19 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}"
+
+  Containerize:
+    name: Build & Push
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{ env.APPLICATIONDOCKERIMAGE }}
+
+      - name: Log in to Docker Hub or your container registry
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push the Docker image
+        run: docker push ${{ env.APPLICATIONDOCKERIMAGE }}
