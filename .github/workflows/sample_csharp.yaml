@@ -19,10 +19,6 @@ jobs:
         language: ["csharp"]
 
     steps:
-      - name: Check Current Directory
-        run: |
-          pwd
-
       - name: Checkout repository
         uses: actions/checkout@v3
 
