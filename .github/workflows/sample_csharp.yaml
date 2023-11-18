@@ -46,8 +46,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check Current Directory
+        run: |
+          pwd
+          ls -la
+
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ${{ env.APPLICATIONDOCKERIMAGE }}
+        run: docker build -t ${{ env.APPLICATIONDOCKERIMAGE }} .
 
       - name: Log in to Docker Hub or your container registry
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
