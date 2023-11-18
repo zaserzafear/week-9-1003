@@ -46,11 +46,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
-
       - name: Build the Docker image
-        run: docker build -t ${{ env.APPLICATIONDOCKERIMAGE }} .
+        run: |
+          echo ${{ env.APPLICATIONDOCKERIMAGE }}
+          docker build -t ${{ env.APPLICATIONDOCKERIMAGE }} .
 
       - name: Log in to Docker Hub or your container registry
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
