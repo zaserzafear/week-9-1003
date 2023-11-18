@@ -52,7 +52,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          run: docker build . --file Dockerfile --tag ${{ vars.APP_IMAGE }}
+          docker build . --file Dockerfile --tag ${{ vars.APP_IMAGE }}
 
       - name: Log in to Docker Hub or your container registry
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
