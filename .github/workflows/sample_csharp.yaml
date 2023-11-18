@@ -3,6 +3,7 @@ name: "CodeQL"
 on:
   push:
     branches: ["develop"]
+  workflow_dispatch:
 
 defaults:
   run:
@@ -12,6 +13,10 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     strategy:
       fail-fast: false
@@ -34,17 +39,6 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}"
-
-  Containerize:
-    name: Build & Push
-    runs-on: ubuntu-latest
-    environment: develop
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Debug
-        run: env
 
       - name: Build the Docker image
         run: |
