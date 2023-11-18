@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: group-5
+  name: week-9-tcc231001
+spec:
+  selector:
+    matchLabels:
+      app: week-9-tcc231001
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: week-9-tcc231001
+    spec:
+      containers:
+        - name: application
+          image: application_image
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: TZ
+              value: Asia/Bangkok
+          ports:
+            - containerPort: 80
