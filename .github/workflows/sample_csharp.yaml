@@ -51,11 +51,11 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          echo $APPLICATIONDOCKERIMAGE
-           docker build -t $APPLICATIONDOCKERIMAGE .
+          echo $APP_IMAGE
+          docker build -t $APP_IMAGE .
 
       - name: Log in to Docker Hub or your container registry
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push the Docker image
-        run: docker push $APPLICATIONDOCKERIMAGE
+        run: docker push $APP_IMAGE
