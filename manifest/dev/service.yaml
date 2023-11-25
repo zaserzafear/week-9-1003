@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: week-9-tcc231001
+  labels:
+    app: week-9-tcc231001
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: week-9-tcc231001
