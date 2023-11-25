@@ -98,22 +98,30 @@ jobs:
           yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
           kubectl apply -f deployment.yaml
 
-      - name: Set up Git
+      # - name: Set up Git
+      #   run: |
+      #     echo "${{ secrets.ACTION_BOT_SSH }}" > id_rsa
+      #     mkdir -p $HOME/.ssh
+      #     mv id_rsa $HOME/.ssh/id_rsa
+      #     chmod 600 $HOME/.ssh/id_rsa
+      #     ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+      #     git remote -v
+
+      #     git config --global user.email "ratchanon.unnu1993@gmail.com"
+      #     git config --global user.name "zaserzafear"
+
+      #     git add deployment.yaml
+      #     git commit -m "bot: update deployment ${{ github.sha }}"
+      #     git push origin develop
+
+      - name: Commit and push changes
         run: |
-          echo "${{ secrets.ACTION_BOT_SSH }}" > id_rsa
-          mkdir -p $HOME/.ssh
-          mv id_rsa $HOME/.ssh/id_rsa
-          chmod 600 $HOME/.ssh/id_rsa
-          ssh-keyscan github.com >> $HOME/.ssh/known_hosts
-
-          git remote -v
-
-          git config --global user.email "ratchanon.unnu1993@gmail.com"
-          git config --global user.name "zaserzafear"
-
-          git add deployment.yaml
-          git commit -m "bot: update deployment ${{ github.sha }}"
-          git push origin develop
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Automated commit from GitHub Actions"
+          git push
 
       # - name: Update Manifest To Git
       #   run: |
