@@ -1,0 +1,69 @@
+name: "production"
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  retag-container:
+    name: Retag Container Image
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./manifest/dev
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub or your container registry
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Retag Container Image
+        run: |
+          IMAGE_SOURCE=$(yq eval '.containers[0].image' deployment.yaml)
+          IMAGE_DEST=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+
+          docker pull $IMAGE_SOURCE
+          docker tag $IMAGE_SOURCE $IMAGE_DEST
+          docker push $IMAGE_DEST
+
+  # deploy-to-production:
+  #   name: Deploy to Kubernetes
+  #   runs-on: ubuntu-latest
+  #   environment: production
+
+  #   defaults:
+  #     run:
+  #       working-directory: ./manifest/prod
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+
+  #     - name: Set up Kube Config
+  #       run: |
+  #         echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+  #         mkdir -p $HOME/.kube
+  #         mv kubeconfig $HOME/.kube/config
+
+  #     - name: Set KUBE_CONTEXT
+  #       run: |
+  #         echo "KUBE_CONTEXT=${{ secrets.KUBE_CONTEXT }}" >> $GITHUB_ENV
+  #         kubectl config use-context "${{ secrets.KUBE_CONTEXT }}"
+
+  #     - name: Update Deployment to k8s
+  #       run: |
+  #         export APP_IMAGE_URL=${{ vars.APP_IMAGE }}:${{ github.sha }}
+  #         yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
+  #         kubectl apply -f deployment.yaml -n ${{ vars.KUBE_NAMESPACE }}
+
+  #     - name: Commit and push changes
+  #       run: |
+  #         git config --local user.email "actions@github.com"
+  #         git config --local user.name "GitHub Actions"
+  #         git add deployment.yaml
+  #         git commit -m "bot: update deployment ${{ github.sha }}"
+  #         git push

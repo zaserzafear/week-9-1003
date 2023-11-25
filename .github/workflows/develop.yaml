@@ -1,4 +1,4 @@
-name: "CodeQL and Docker"
+name: "develop"
 
 on:
   push:
@@ -66,7 +66,7 @@ jobs:
       - name: Push the Docker image
         run: docker push ${{ vars.APP_IMAGE }}:$GITHUB_SHA
 
-  deploy-to-k8s:
+  deploy-to-develop:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
     environment: develop
