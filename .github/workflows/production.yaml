@@ -45,7 +45,7 @@ jobs:
         env:
           IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_DEST }}
         run: |
-          yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
+          yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TOCHANGE)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ vars.KUBE_NAMESPACE }}
 
       - name: Commit and push changes
