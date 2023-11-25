@@ -90,7 +90,7 @@ jobs:
       - name: Set KUBE_CONTEXT
         run: |
           echo "KUBE_CONTEXT=${{ secrets.KUBE_CONTEXT }}" >> $GITHUB_ENV
-          kubectl config use-context "${{ secrets.KUBE_CONTEXT }}"
+          kubectl config use-context "${{ secrets.KUBE_CONTEXT }}" --namespace=${{ vars.KUBE_NAMESPACE }}
 
       - name: Update Deployment to k8s
         run: |
