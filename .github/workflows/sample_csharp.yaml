@@ -119,7 +119,7 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add .
+          git add deployment.yaml
           git commit -m "Automated commit from GitHub Actions"
           git push
 
