@@ -102,3 +102,9 @@ jobs:
           export APP_IMAGE_URL=${{ vars.APP_IMAGE }}:${{ github.sha }}
           yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
           kubectl apply -f deployment.yaml
+
+      - name: Update Manifest To Git
+        run: |
+          git add deployment.yaml
+          git commit -m "bot: update deployment ${{ github.sha }}"
+          git push origin develop
