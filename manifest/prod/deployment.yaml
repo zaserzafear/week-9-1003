@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: week-9-tcc231003-prod
+spec:
+  selector:
+    matchLabels:
+      app: week-9-tcc231003-prod
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: week-9-tcc231003-prod
+    spec:
+      containers:
+        - name: application
+          image: zaserzafear/week-9-1003:04c6f84d35fe2d21da68657bd70332b6a8d5e565
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: TZ
+              value: Asia/Bangkok
+          ports:
+            - containerPort: 80
