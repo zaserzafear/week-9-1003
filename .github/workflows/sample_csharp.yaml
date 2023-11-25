@@ -109,8 +109,9 @@ jobs:
           git config --global user.email "ratchanon.unnu1993@gmail.com"
           git config --global user.name "zaserzafear"
 
-      - name: Update Manifest To Git
-        run: |
           git add deployment.yaml
           git commit -m "bot: update deployment ${{ github.sha }}"
           git push origin develop
+
+      # - name: Update Manifest To Git
+      #   run: |
