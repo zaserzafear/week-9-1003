@@ -23,10 +23,10 @@ jobs:
 
       - name: Retag Container Image
         run: |
-          IMAGE_SOURCE=$(yq eval '.containers[0].image' deployment.yaml)
-          IMAGE_DEST=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
-
+          IMAGE_SOURCE=$(yq eval '.spec.template.spec.containers[0].image' deployment.yaml)
           docker pull $IMAGE_SOURCE
+
+          IMAGE_DEST=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
           docker tag $IMAGE_SOURCE $IMAGE_DEST
           docker push $IMAGE_DEST
 
