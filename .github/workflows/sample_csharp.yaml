@@ -104,7 +104,7 @@ jobs:
           mkdir -p $HOME/.ssh
           mv id_rsa $HOME/.ssh/id_rsa
           chmod 600 $HOME/.ssh/id_rsa
-          ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts
+          ssh-keyscan github.com >> $HOME/.ssh/known_hosts
 
           git config --global user.email "ratchanon.unnu1993@gmail.com"
           git config --global user.name "zaserzafear"
