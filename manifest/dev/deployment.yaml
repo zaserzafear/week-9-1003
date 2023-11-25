@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: week-9-tcc231001
+  name: week-9-tcc231003
 spec:
   selector:
     matchLabels:
-      app: week-9-tcc231001
+      app: week-9-tcc231003
   replicas: 1
   template:
     metadata:
       labels:
-        app: week-9-tcc231001
+        app: week-9-tcc231003
     spec:
       containers:
         - name: application
