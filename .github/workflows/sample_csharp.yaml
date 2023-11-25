@@ -102,6 +102,7 @@ jobs:
         run: |
           echo "${{ secrets.ACTION_BOT_SSH }}" > id_rsa
           mkdir -p $HOME/.ssh
+          mv id_rsa $HOME/.ssh/id_rsa
 
           git config --global user.email "ratchanon.unnu1993@gmail.com"
           git config --global user.name "zaserzafear"
