@@ -81,23 +81,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up kubeconfig
-        run: echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
-
-      - name: Use kubeconfig
+      - name: Set up Kube Config
         run: |
+          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
           mkdir -p $HOME/.kube
           mv kubeconfig $HOME/.kube/config
-
-      - name: Debug kubeconfig
-        run: cat $HOME/.kube/config
 
       - name: Set KUBE_CONTEXT
         run: |
           echo "KUBE_CONTEXT=${{ secrets.KUBE_CONTEXT }}" >> $GITHUB_ENV
           kubectl config use-context "${{ secrets.KUBE_CONTEXT }}"
 
-      - name: Update deploy to k8s
+      - name: Update Deployment to k8s
         run: |
           export APP_IMAGE_URL=${{ vars.APP_IMAGE }}:${{ github.sha }}
           yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
@@ -105,6 +100,9 @@ jobs:
 
       - name: Set up Git
         run: |
+          echo "${{ secrets.ACTION_BOT_SSH }}" > id_rsa
+          mkdir -p $HOME/.ssh
+
           git config --global user.email "ratchanon.unnu1993@gmail.com"
           git config --global user.name "zaserzafear"
 
