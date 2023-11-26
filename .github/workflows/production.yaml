@@ -8,7 +8,7 @@ on:
 jobs:
   retag-container:
     name: Retag Container Image
-    runs-on: github-selfhost
+    runs-on: self-hosted
     environment: production
 
     outputs:
