@@ -12,7 +12,7 @@ jobs:
     environment: production
 
     outputs:
-      IMAGE_TOCHANGE: ${{ steps.retag.outputs.test }}
+      IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
 
     steps:
       - name: Checkout repository
@@ -39,6 +39,9 @@ jobs:
     runs-on: self-hosted
     environment: production
 
+    env:
+      IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.IMAGE_TOCHANGE }}
+
     steps:
       - name: Set up Kube Config
         run: |
@@ -52,11 +55,8 @@ jobs:
 
       - name: Update Deployment to k8s
         working-directory: ./manifest/prod
-        env:
-          IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.IMAGE_TOCHANGE }}
-
         run: |
-          IMAGE_TOCHANGE=${{ env.IMAGE_DEST }}
+          IMAGE_TOCHANGE="${{ env.IMAGE_TOCHANGE }}"
           echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
 
           yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TOCHANGE)' deployment.yaml
