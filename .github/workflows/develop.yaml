@@ -12,7 +12,7 @@ defaults:
 jobs:
   # analyze:
   #   name: Analyze CodeQL
-  #   runs-on: ubuntu-latest
+  #   runs-on: self-hosted
   #   permissions:
   #     actions: read
   #     contents: read
@@ -48,7 +48,7 @@ jobs:
 
   containerize:
     name: Build & Push Docker Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     # needs: analyze
 
@@ -68,7 +68,7 @@ jobs:
 
   deploy-to-develop:
     name: Deploy to Kubernetes
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: develop
 
     needs: containerize

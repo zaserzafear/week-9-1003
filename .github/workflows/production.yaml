@@ -8,8 +8,11 @@ on:
 jobs:
   retag-container:
     name: Retag Container Image
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: production
+
+    outputs:
+      IMAGE_DEST: ${{ steps.retag.outputs.IMAGE_DEST }}
 
     steps:
       - name: Checkout repository
@@ -28,6 +31,8 @@ jobs:
           IMAGE_DEST=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
           docker tag $IMAGE_SOURCE $IMAGE_DEST
           docker push $IMAGE_DEST
+          
+          echo "::set-output name=IMAGE_DEST::$IMAGE_DEST"
 
       - name: Set up Kube Config
         run: |
