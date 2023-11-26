@@ -2,12 +2,9 @@ name: "develop"
 
 on:
   push:
-    branches: ["develop"]
+    branches:
+      - develop
   workflow_dispatch:
-
-defaults:
-  run:
-    working-directory: ./application/sample_csharp
 
 jobs:
   # analyze:
@@ -17,6 +14,10 @@ jobs:
   #     actions: read
   #     contents: read
   #     security-events: write
+
+  #   defaults:
+  #     run:
+  #       working-directory: ./application/sample_csharp
 
   #   strategy:
   #     fail-fast: false
@@ -57,6 +58,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build the Docker image
+        working-directory: ./application/sample_csharp
         run: |
           docker build . --file Dockerfile --tag ${{ vars.APP_IMAGE }}:$GITHUB_SHA
 
@@ -89,7 +91,7 @@ jobs:
 
       - name: Set KUBE_CONTEXT
         run: |
-          echo "KUBE_CONTEXT=${{ secrets.KUBE_CONTEXT }}" >> $GITHUB_ENV
+          # echo "KUBE_CONTEXT=${{ secrets.KUBE_CONTEXT }}" >> $GITHUB_ENV
           kubectl config use-context "${{ secrets.KUBE_CONTEXT }}"
 
       - name: Update Deployment to k8s
@@ -104,4 +106,4 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add deployment.yaml
           git commit -m "bot: update deployment ${{ github.sha }}"
-          git push origin develop
+          git push
