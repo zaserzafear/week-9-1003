@@ -25,10 +25,13 @@ jobs:
           IMAGE_SOURCE=$(yq eval '.spec.template.spec.containers[0].image' deployment.yaml)
           docker pull $IMAGE_SOURCE
 
-          echo "IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+          IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
 
-          docker tag $IMAGE_SOURCE ${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
-          docker push ${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
+          docker push $IMAGE_TOCHANGE
+
+          echo "::set-output name=IMAGE_DEST::${IMAGE_TOCHANGE}" >> $GITHUB_ENV
 
   deploy-production:
     needs: retag-container
@@ -50,7 +53,8 @@ jobs:
         working-directory: ./manifest/prod
         run: |
           IMAGE_TOCHANGE=${{ env.IMAGE_DEST }}
-          echo "IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
+          echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
+
           yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TOCHANGE)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
 
