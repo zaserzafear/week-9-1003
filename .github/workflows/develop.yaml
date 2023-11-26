@@ -69,11 +69,9 @@ jobs:
         run: docker push ${{ vars.APP_IMAGE }}:$GITHUB_SHA
 
   deploy-to-develop:
-    name: Deploy to Kubernetes
+    needs: containerize
     runs-on: self-hosted
     environment: develop
-
-    needs: containerize
 
     defaults:
       run:
