@@ -8,7 +8,7 @@ on:
 jobs:
   retag-container:
     name: Retag Container Image
-    runs-on: ubuntu-latest
+    runs-on: github-selfhost
     environment: production
 
     outputs:
