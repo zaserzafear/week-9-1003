@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: application
-          image: zaserzafear/week-9-1003:33b3ec4f0c6b364178643f4e60a0942a3a939023
+          image: zaserzafear/week-9-1003:4c19193eeb7b9524cf7bf73294d1d04abc96c813
           imagePullPolicy: "IfNotPresent"
           env:
             - name: TZ
