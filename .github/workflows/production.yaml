@@ -32,7 +32,7 @@ jobs:
           docker tag $IMAGE_SOURCE $IMAGE_DEST
           docker push $IMAGE_DEST
 
-          echo "::set-output name=IMAGE_DEST::$IMAGE_DEST"
+          echo "{IMAGE_DEST}={$IMAGE_DEST}" >> $GITHUB_OUTPUT
 
       - name: Set up Kube Config
         run: |
@@ -42,7 +42,6 @@ jobs:
 
       - name: Set KUBE_CONTEXT
         run: |
-          # echo "KUBE_CONTEXT=${{ secrets.KUBE_CONTEXT }}" >> $GITHUB_ENV
           kubectl config use-context "${{ secrets.KUBE_CONTEXT }}"
 
       - name: Update Deployment to k8s
@@ -59,5 +58,6 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add deployment.yaml
-          git commit -m "bot: update deployment ${{ github.sha }}"
-          git push origin main
+          git commit -m "bot: update deployment ${{ steps.retag.outputs.IMAGE_DEST }}"
+          git checkout -b main
+          git push
