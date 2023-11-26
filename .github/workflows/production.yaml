@@ -60,4 +60,4 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add deployment.yaml
           git commit -m "bot: update deployment ${{ github.sha }}"
-          git push
+          git push origin main
