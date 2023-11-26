@@ -26,10 +26,9 @@ jobs:
           docker pull $IMAGE_SOURCE
 
           echo "IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
-          docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
-          docker push $IMAGE_TOCHANGE
 
-          # echo "IMAGE_TOCHANGE=$IMAGE_TOCHANGE" >> $GITHUB_ENV
+          docker tag $IMAGE_SOURCE ${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          docker push ${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
 
   deploy-production:
     needs: retag-container
