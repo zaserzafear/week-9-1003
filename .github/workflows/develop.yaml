@@ -93,7 +93,7 @@ jobs:
 
       - name: Update Deployment to k8s
         run: |
-          export APP_IMAGE_URL=${{ vars.APP_IMAGE }}:${{ github.sha }}
+          export APP_IMAGE_URL=${{ secrets.APP_IMAGE }}:${{ github.sha }}
           yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
 
