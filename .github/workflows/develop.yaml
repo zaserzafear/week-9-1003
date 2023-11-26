@@ -10,47 +10,47 @@ defaults:
     working-directory: ./application/sample_csharp
 
 jobs:
-  analyze:
-    name: Analyze CodeQL
-    runs-on: self-hosted
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+  # analyze:
+  #   name: Analyze CodeQL
+  #   runs-on: self-hosted
+  #   permissions:
+  #     actions: read
+  #     contents: read
+  #     security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["csharp"]
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       language: ["csharp"]
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: ${{ matrix.language }}
+  #     - name: Initialize CodeQL
+  #       uses: github/codeql-action/init@v2
+  #       with:
+  #         languages: ${{ matrix.language }}
 
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+  #     - name: Autobuild
+  #       uses: github/codeql-action/autobuild@v2
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        with:
-          category: "/language:${{matrix.language}}"
+  #     - name: Perform CodeQL Analysis
+  #       uses: github/codeql-action/analyze@v2
+  #       with:
+  #         category: "/language:${{matrix.language}}"
 
-      - name: Save CodeQL results
-        uses: actions/upload-artifact@v2
-        with:
-          name: codeql-results
-          path: ./codeql-results
+  #     - name: Save CodeQL results
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: codeql-results
+  #         path: ./codeql-results
 
   containerize:
     name: Build & Push Docker Image
     runs-on: self-hosted
 
-    needs: analyze
+    # needs: analyze
 
     steps:
       - name: Checkout repository
