@@ -11,6 +11,9 @@ jobs:
     runs-on: self-hosted
     environment: production
 
+    outputs:
+      IMAGE_TOCHANGE: ${{ steps.retag.outputs.test }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -29,9 +32,7 @@ jobs:
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
-
-          echo "{IMAGE_TOCHANGE}=$IMAGE_TOCHANGE" >> "$GITHUB_OUTPUT"
-          echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
+          echo "IMAGE_TOCHANGE=$IMAGE_TOCHANGE" >> "$GITHUB_OUTPUT"
 
   deploy-production:
     needs: retag-container
@@ -52,7 +53,7 @@ jobs:
       - name: Update Deployment to k8s
         working-directory: ./manifest/prod
         env:
-          IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
+          IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.IMAGE_TOCHANGE }}
 
         run: |
           IMAGE_TOCHANGE=${{ env.IMAGE_DEST }}
