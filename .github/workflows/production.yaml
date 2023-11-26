@@ -49,6 +49,7 @@ jobs:
         env:
           IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_RETAG }}
         run: |
+          echo "$IMAGE_TOCHANGE"
           yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TOCHANGE)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ vars.KUBE_NAMESPACE }}
 
