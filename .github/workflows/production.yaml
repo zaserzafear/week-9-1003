@@ -12,14 +12,14 @@ jobs:
     environment: production
 
     outputs:
-      IMAGE_DEST: ${{ steps.retag.outputs.IMAGE_DEST }}
+      IMAGE_RETAG: ${{ steps.retag.outputs.IMAGE_DEST }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub or your container registry
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Retag Container Image
         id: retag
@@ -28,11 +28,11 @@ jobs:
           IMAGE_SOURCE=$(yq eval '.spec.template.spec.containers[0].image' deployment.yaml)
           docker pull $IMAGE_SOURCE
 
-          IMAGE_DEST=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
-          docker tag $IMAGE_SOURCE $IMAGE_DEST
-          docker push $IMAGE_DEST
+          IMAGE_TOCHANGE=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
+          docker push $IMAGE_TOCHANGE
 
-          echo "{IMAGE_DEST}={$IMAGE_DEST}" >> $GITHUB_OUTPUT
+          echo "{IMAGE_DEST}={$IMAGE_TOCHANGE}" >> $GITHUB_OUTPUT
 
       - name: Set up Kube Config
         run: |
@@ -47,7 +47,7 @@ jobs:
       - name: Update Deployment to k8s
         working-directory: ./manifest/prod
         env:
-          IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_DEST }}
+          IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_RETAG }}
         run: |
           yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TOCHANGE)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ vars.KUBE_NAMESPACE }}
