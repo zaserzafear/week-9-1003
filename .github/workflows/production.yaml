@@ -32,7 +32,7 @@ jobs:
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
 
-          echo "{IMAGE_DEST}={$IMAGE_TOCHANGE}" >> $GITHUB_OUTPUT
+          echo "::set-output name=IMAGE_DEST::$IMAGE_TOCHANGE" >> $GITHUB_ENV
 
       - name: Set up Kube Config
         run: |
@@ -58,6 +58,6 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add deployment.yaml
-          git commit -m "bot: update deployment ${{ steps.retag.outputs.IMAGE_DEST }}"
+          git commit -m "bot: update deployment ${{ steps.retag.outputs.IMAGE_RETAG }}"
           git checkout -b main
           git push
