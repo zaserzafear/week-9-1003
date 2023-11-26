@@ -26,12 +26,12 @@ jobs:
           docker pull $IMAGE_SOURCE
 
           IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER
-          echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
 
-          echo "::set-output name=IMAGE_DEST::${IMAGE_TOCHANGE}" >> $GITHUB_ENV
+          echo "{IMAGE_TOCHANGE}=$IMAGE_TOCHANGE" >> "$GITHUB_OUTPUT"
+          echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
 
   deploy-production:
     needs: retag-container
@@ -51,6 +51,9 @@ jobs:
 
       - name: Update Deployment to k8s
         working-directory: ./manifest/prod
+        env:
+          IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
+
         run: |
           IMAGE_TOCHANGE=${{ env.IMAGE_DEST }}
           echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
