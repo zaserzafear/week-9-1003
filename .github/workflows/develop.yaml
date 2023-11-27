@@ -113,6 +113,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
+          git checkout develop
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add deployment.yaml
