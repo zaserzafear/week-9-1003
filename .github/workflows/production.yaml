@@ -52,7 +52,6 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git checkout main
           git add deployment.yaml
           git commit -m "bot: update deployment ${APP_IMAGE}"
           git push
