@@ -61,7 +61,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.APP_IMAGE }}:${GITHUB_SHA}
+          images: ${{ vars.APP_IMAGE }}
+          tags: ${{ github.sha }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
