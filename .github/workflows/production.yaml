@@ -25,8 +25,8 @@ jobs:
           IMAGE_SOURCE=$(yq eval '.spec.template.spec.containers[0].image' deployment.yaml)
           docker pull $IMAGE_SOURCE
 
-          IMAGE_TOCHANGE=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
-          echo "{IMAGE_TOCHANGE}=${IMAGE_TOCHANGE" >> $GITHUB_OUTPUT
+          IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          echo "IMAGE_TOCHANGE=${IMAGE_TOCHANGE}" >> $GITHUB_OUTPUT
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
