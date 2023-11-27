@@ -33,11 +33,12 @@ jobs:
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
 
-          echo "::set-output name=image_tochange::${IMAGE_TOCHANGE}"
+          echo "${{ needs.retag-container.outputs.image_tochange }}=${IMAGE_TOCHANGE}" >> $GITHUB_OUTPUT
 
-      - name: Debug - Print IMAGE_TOCHANGE in retag-container
+      - name: Print IMAGE_TOCHANGE in retag-container
         run: |
-          echo "DEBUG: IMAGE_TOCHANGE=${{ steps.retag.outputs.image_tochange }}"
+          echo "Deploying IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.image_tochange }}"
+          echo "DEBUG: vars.APP_IMAGE=${{ vars.APP_IMAGE }}"
 
   deploy-production:
     needs: retag-container
