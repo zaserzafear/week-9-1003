@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: application
-          image: steps.retag.outputs.IMAGE_TOCHANGE
+          image: zaserzafear/week-9-1003:7001760073
           imagePullPolicy: "IfNotPresent"
           env:
             - name: TZ
