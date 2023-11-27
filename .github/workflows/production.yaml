@@ -33,7 +33,7 @@ jobs:
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
 
-          echo "${{ needs.retag-container.outputs.image_tochange }}=${IMAGE_TOCHANGE}" >> $GITHUB_OUTPUT
+          echo "image_tochange=${IMAGE_TOCHANGE}" >> $GITHUB_OUTPUT
 
       - name: Print IMAGE_TOCHANGE in retag-container
         run: |
