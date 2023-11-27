@@ -73,7 +73,7 @@ jobs:
           context: ./application/sample_csharp
           file: Dockerfile
           push: true
-          tags: ${{ secrets.APP_IMAGE }}:${{ GITHUB_SHA }}
+          tags: ${{ vars.APP_IMAGE }}:${GITHUB_SHA}
 
   deploy-to-develop:
     needs: containerize
