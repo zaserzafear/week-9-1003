@@ -25,7 +25,7 @@ jobs:
           IMAGE_SOURCE=$(yq eval '.spec.template.spec.containers[0].image' deployment.yaml)
           docker pull $IMAGE_SOURCE
 
-          IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          IMAGE_TOCHANGE=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
           echo "IMAGE_TOCHANGE=${IMAGE_TOCHANGE}" >> $GITHUB_OUTPUT
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
@@ -34,4 +34,4 @@ jobs:
       - name: Debug - Print IMAGE_TOCHANGE in retag-container
         run: |
           echo "DEBUG: IMAGE_TOCHANGE=${{ steps.retag.outputs.image_tochange }}"
-          echo "DEBUG: vars.APP_IMAGE=${{ secrets.APP_IMAGE }}"
+          echo "DEBUG: vars.APP_IMAGE=${{ vars.APP_IMAGE }}"
