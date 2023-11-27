@@ -12,7 +12,7 @@ jobs:
     environment: production
 
     outputs:
-      image_tochange: ${{ steps.retag.outputs.image_new }}
+      image_tochange: ${{ steps.retag.outputs.image_tochange }}
 
     steps:
       - name: Checkout repository
