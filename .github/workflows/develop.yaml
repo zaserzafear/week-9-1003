@@ -78,7 +78,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./application/sample_csharp
-          file: Dockerfile
+          file: ./application/sample_csharp/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
