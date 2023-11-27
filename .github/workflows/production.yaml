@@ -16,9 +16,8 @@ jobs:
     runs-on: self-hosted
     environment: production
 
-    outputs:
-      id: retag
-      IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
+    # outputs:
+    #   IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
 
     steps:
       - name: Checkout repository
@@ -38,9 +37,11 @@ jobs:
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
-          echo "IMAGE_TOCHANGE=$IMAGE_TOCHANGE" >> $GITHUB_ENV
-          echo "::set-env name=IMAGE_TOCHANGE::$IMAGE_TOCHANGE"
+
+          echo "{IMAGE_TOCHANGE}={ $IMAGE_TOCHANGE }" >> "$GITHUB_OUTPUT"
 
       - name: Debug - Print IMAGE_TOCHANGE in retag-container
+        env:
+          IMAGE_NEW: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
         run: |
-          echo "DEBUG: IMAGE_TOCHANGE=$IMAGE_TOCHANGE"
+          echo "DEBUG: IMAGE_TOCHANGE=$IMAGE_NEW"
