@@ -38,7 +38,9 @@ jobs:
           docker push $IMAGE_TOCHANGE
 
       - name: Update Deployment to k8s
+        env:
+          APP_IMAGE: steps.retag.outputs.IMAGE_TOCHANGE
         working-directory: ./manifest/prod
         run: |
-          yq -i '.spec.template.spec.containers[0].image = strenv(steps.retag.outputs.IMAGE_TOCHANGE)' deployment.yaml
+          yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
