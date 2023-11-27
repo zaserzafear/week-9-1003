@@ -24,12 +24,14 @@ jobs:
 
       - name: Retag Container Image
         id: retag
+        env:
+          APP_IMAGE: ${{ secrets.APP_IMAGE }}
         working-directory: ./manifest/dev
         run: |
           IMAGE_SOURCE=$(yq eval '.spec.template.spec.containers[0].image' deployment.yaml)
           docker pull $IMAGE_SOURCE
 
-          IMAGE_TOCHANGE=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          IMAGE_TOCHANGE=${APP_IMAGE}:${GITHUB_RUN_ID}
           echo "IMAGE_TOCHANGE=${IMAGE_TOCHANGE}" >> $GITHUB_OUTPUT
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
@@ -38,6 +40,5 @@ jobs:
       - name: Update Deployment to k8s
         working-directory: ./manifest/prod
         run: |
-          export APP_IMAGE_URL=${{ steps.retag.outputs.image_tochange }}
-          yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
+          yq -i '.spec.template.spec.containers[0].image = strenv(steps.retag.outputs.IMAGE_TOCHANGE)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
