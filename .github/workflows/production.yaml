@@ -8,12 +8,11 @@ on:
 
 jobs:
   retag-container:
-    name: Retag Container Image
     runs-on: self-hosted
     environment: production
 
     outputs:
-      IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
+      image_tochange: ${{ steps.retag.outputs.image_new }}
 
     steps:
       - name: Checkout repository
@@ -29,19 +28,16 @@ jobs:
           IMAGE_SOURCE=$(yq eval '.spec.template.spec.containers[0].image' deployment.yaml)
           docker pull $IMAGE_SOURCE
 
-          IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          export IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
 
-          # Set the environment variable for later steps
-          echo "IMAGE_TOCHANGE=${IMAGE_TOCHANGE}" >> $GITHUB_ENV
-          echo "::set-output name=IMAGE_TOCHANGE::${IMAGE_TOCHANGE}"
+          echo "::set-output name=image_tochange::${IMAGE_TOCHANGE}"
 
       - name: Debug - Print IMAGE_TOCHANGE in retag-container
         run: |
-          echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
-          echo "DEBUG: IMAGE_TOCHANGE=${{ steps.retag.outputs.IMAGE_TOCHANGE }}"
+          echo "DEBUG: IMAGE_TOCHANGE=${{ steps.retag.outputs.image_tochange }}"
 
   deploy-production:
     needs: retag-container
@@ -51,4 +47,4 @@ jobs:
     steps:
       - name: Print IMAGE_TOCHANGE in deploy-production
         run: |
-          echo "Deploying IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.IMAGE_TOCHANGE }}"
+          echo "Deploying IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.image_tochange }}"
