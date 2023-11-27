@@ -44,3 +44,14 @@ jobs:
         run: |
           yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
+
+      - name: Commit and push changes
+        env:
+          APP_IMAGE: steps.retag.outputs.IMAGE_TOCHANGE
+        working-directory: ./manifest/prod
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add deployment.yaml
+          git commit -m "bot: update deployment $APP_IMAGE"
+          git push
