@@ -39,7 +39,7 @@ jobs:
 
       - name: Update Deployment to k8s
         env:
-          APP_IMAGE: steps.retag.outputs.IMAGE_TOCHANGE
+          APP_IMAGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
         working-directory: ./manifest/prod
         run: |
           yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE)' deployment.yaml
@@ -47,7 +47,7 @@ jobs:
 
       - name: Commit and push changes
         env:
-          APP_IMAGE: steps.retag.outputs.IMAGE_TOCHANGE
+          APP_IMAGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
         working-directory: ./manifest/prod
         run: |
           git config --local user.email "actions@github.com"
