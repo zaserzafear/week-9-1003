@@ -1,10 +1,10 @@
 name: "develop"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - develop
-  workflow_dispatch:
 
 jobs:
   # analyze:
@@ -60,13 +60,13 @@ jobs:
       - name: Build the Docker image
         working-directory: ./application/sample_csharp
         run: |
-          docker build . --file Dockerfile --tag ${{ secrets.APP_IMAGE }}:$GITHUB_SHA
+          docker build . --file Dockerfile --tag ${{ vars.APP_IMAGE }}:$GITHUB_SHA
 
       - name: Log in to Docker Hub or your container registry
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Push the Docker image
-        run: docker push ${{ secrets.APP_IMAGE }}:$GITHUB_SHA
+        run: docker push ${{ vars.APP_IMAGE }}:$GITHUB_SHA
 
   deploy-to-develop:
     needs: containerize
@@ -93,7 +93,7 @@ jobs:
 
       - name: Update Deployment to k8s
         run: |
-          export APP_IMAGE_URL=${{ secrets.APP_IMAGE }}:${{ github.sha }}
+          export APP_IMAGE_URL=${{ vars.APP_IMAGE }}:${{ github.sha }}
           yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
 

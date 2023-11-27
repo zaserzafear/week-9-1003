@@ -1,10 +1,10 @@
 name: "production"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   retag-container:
@@ -28,7 +28,7 @@ jobs:
           IMAGE_SOURCE=$(yq eval '.spec.template.spec.containers[0].image' deployment.yaml)
           docker pull $IMAGE_SOURCE
 
-          export IMAGE_TOCHANGE=${{ secrets.APP_IMAGE }}:$GITHUB_RUN_NUMBER
+          export IMAGE_TOCHANGE=${{ vars.APP_IMAGE }}:$GITHUB_RUN_NUMBER
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
@@ -48,3 +48,4 @@ jobs:
       - name: Print IMAGE_TOCHANGE in deploy-production
         run: |
           echo "Deploying IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.image_tochange }}"
+          echo "DEBUG: vars.APP_IMAGE=${{ vars.APP_IMAGE }}"
