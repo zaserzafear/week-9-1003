@@ -12,6 +12,9 @@ jobs:
     runs-on: self-hosted
     environment: production
 
+    outputs:
+      IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -33,7 +36,19 @@ jobs:
 
           # Set the environment variable for later steps
           echo "IMAGE_TOCHANGE=${IMAGE_TOCHANGE}" >> $GITHUB_ENV
+          echo "::set-output name=IMAGE_TOCHANGE::${IMAGE_TOCHANGE}"
 
       - name: Debug - Print IMAGE_TOCHANGE in retag-container
         run: |
           echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
+          echo "DEBUG: IMAGE_TOCHANGE=${{ steps.retag.outputs.IMAGE_TOCHANGE }}"
+
+  deploy-production:
+    needs: retag-container
+    runs-on: self-hosted
+    environment: production
+
+    steps:
+      - name: Print IMAGE_TOCHANGE in deploy-production
+        run: |
+          echo "Deploying IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.IMAGE_TOCHANGE }}"
