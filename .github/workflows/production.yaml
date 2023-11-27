@@ -1,10 +1,15 @@
 name: "production"
 
 on:
-  pull_request:
+  push:
     branches:
       - main
+  workflow_dispatch:
 
+# on:
+#   pull_request:
+#     branches:
+#       - main
 jobs:
   retag-container:
     name: Retag Container Image
@@ -12,6 +17,7 @@ jobs:
     environment: production
 
     outputs:
+      id: retag
       IMAGE_TOCHANGE: ${{ steps.retag.outputs.IMAGE_TOCHANGE }}
 
     steps:
@@ -32,7 +38,6 @@ jobs:
 
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
-          echo "IMAGE_TOCHANGE=$IMAGE_TOCHANGE" >> "$GITHUB_OUTPUT"
 
   deploy-production:
     needs: retag-container
@@ -56,8 +61,7 @@ jobs:
       - name: Update Deployment to k8s
         working-directory: ./manifest/prod
         run: |
-          IMAGE_TOCHANGE="${{ env.IMAGE_TOCHANGE }}"
-          echo "DEBUG: IMAGE_TOCHANGE=${IMAGE_TOCHANGE}"
+          echo "DEBUG: IMAGE_TOCHANGE=${{ env.IMAGE_TOCHANGE }}"
 
           yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TOCHANGE)' deployment.yaml
           kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
