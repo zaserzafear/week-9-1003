@@ -34,4 +34,10 @@ jobs:
       - name: Debug - Print IMAGE_TOCHANGE in retag-container
         run: |
           echo "DEBUG: IMAGE_TOCHANGE=${{ steps.retag.outputs.image_tochange }}"
-          echo "DEBUG: vars.APP_IMAGE=${{ vars.APP_IMAGE }}"
+
+      - name: Update Deployment to k8s
+        working-directory: ./manifest/prod
+        run: |
+          export APP_IMAGE_URL=${{ steps.retag.outputs.image_tochange }}
+          yq -i '.spec.template.spec.containers[0].image = strenv(APP_IMAGE_URL)' deployment.yaml
+          kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
