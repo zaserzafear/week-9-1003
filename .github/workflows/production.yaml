@@ -39,48 +39,8 @@ jobs:
           docker tag $IMAGE_SOURCE $IMAGE_TOCHANGE
           docker push $IMAGE_TOCHANGE
           echo "IMAGE_TOCHANGE=$IMAGE_TOCHANGE" >> $GITHUB_ENV
+          echo "::set-env name=IMAGE_TOCHANGE::$IMAGE_TOCHANGE"
 
       - name: Debug - Print IMAGE_TOCHANGE in retag-container
         run: |
-          echo "DEBUG: IMAGE_TOCHANGE=${{ needs.retag-container.outputs.IMAGE_TOCHANGE }}"
-
-  deploy-production:
-    needs: retag-container
-    runs-on: self-hosted
-    environment: production
-
-    env:
-      IMAGE_TOCHANGE: ${{ needs.retag-container.outputs.IMAGE_TOCHANGE }}
-
-    steps:
-      - name: Set up Kube Config
-        run: |
-          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
-          mkdir -p $HOME/.kube
-          mv kubeconfig $HOME/.kube/config
-
-      - name: Set KUBE_CONTEXT
-        run: |
-          kubectl config use-context "${{ secrets.KUBE_CONTEXT }}"
-
-      - name: Debug - Print IMAGE_TOCHANGE in deploy-production
-        run: |
-          echo "DEBUG: IMAGE_TOCHANGE=${{ env.IMAGE_TOCHANGE }}"
-
-      - name: Update Deployment to k8s
-        working-directory: ./manifest/prod
-        run: |
-          echo "DEBUG: IMAGE_TOCHANGE=${{ env.IMAGE_TOCHANGE }}"
-
-          yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TOCHANGE)' deployment.yaml
-          kubectl apply -f deployment.yaml -n ${{ secrets.KUBE_NAMESPACE }}
-
-      - name: Commit and push changes
-        working-directory: ./manifest/prod
-        run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add deployment.yaml
-          git commit -m "bot: update deployment $IMAGE_TOCHANGE"
-          git checkout -b main
-          git push
+          echo "DEBUG: IMAGE_TOCHANGE=$IMAGE_TOCHANGE"
